@@ -178,7 +178,31 @@ def export_excel():
     return send_file(file, as_attachment=True)
 
 # -------------------------
+# CANCELLA PRODOTTO
+# -------------------------
+@app.route("/articolo/delete/<int:id>", methods=["POST"])
+@login_required
+def delete_articolo(id):
+    conn = db_conn()
+    cur = conn.cursor()
+
+    # (opzionale) controllo se esistono movimenti
+    cur.execute("SELECT COUNT(*) FROM movimenti WHERE articolo_id = ?", (id,))
+    movimenti = cur.fetchone()[0]
+
+    if movimenti > 0:
+        conn.close()
+        return "Impossibile cancellare: articolo con movimenti registrati", 400
+
+    cur.execute("DELETE FROM articoli WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/magazzino")
+
+
+# -------------------------
 # AVVIO
 # -------------------------
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
