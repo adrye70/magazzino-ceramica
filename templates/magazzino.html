@@ -18,7 +18,8 @@
         <th>Formato</th>
         <th>Colore</th>
         <th>Quantità</th>
-        <th></th>
+        <th>Azioni</th>
+		<th></th
     </tr>
 
     {% for a in articoli %}
@@ -28,10 +29,19 @@
         <td>{{ a["formato"] }}</td>
         <td>{{ a["colore"] }}</td>
         <td>{{ a["quantita"] }}</td>
-        <td>
-            <a class="btn btn-sm btn-primary" href="/movimento/{{ a['id'] }}">
-                🔁 Movimento
-            </a>
+        <td class="d-flex gap-2">
+    <a class="btn btn-sm btn-primary"
+       href="/movimento/{{ a['id'] }}">
+        🔁 Movimento
+    </a>
+
+    <form method="post"
+          action="/articolo/delete/{{ a['id'] }}"
+          onsubmit="return confirm('Sei sicuro di voler cancellare questo prodotto?');">
+        <button class="btn btn-sm btn-danger">
+            🗑️ Elimina
+        </button>
+    </form>
         </td>
     </tr>
     {% endfor %}
